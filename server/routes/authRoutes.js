@@ -18,6 +18,7 @@ const handleUserLogin = async (req, res, targetRole = null) => {
     const user = await User.findOne({
       $or: [
         { userId: cleanInput },
+        { userId: cleanInput.toLowerCase() },
         { email: cleanInput.toLowerCase() }
       ]
     });

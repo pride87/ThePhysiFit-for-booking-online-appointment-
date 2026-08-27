@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 
 dotenv.config();
@@ -40,11 +41,15 @@ app.use('/api', require('./routes/paymentRoutes'));
 
 // Health Check Endpoint
 app.get('/api/health', (req, res) => {
+  const dbState = mongoose.connection.readyState;
+  const states = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' };
+
   return res.status(200).json({
     status: 'ok',
     service: 'ThePhysiFit Express API Server',
     timestamp: new Date().toISOString(),
-    mongodb: 'connected'
+    mongodb: states[dbState] || 'unknown',
+    database: mongoose.connection.name || 'physiocare'
   });
 });
 
